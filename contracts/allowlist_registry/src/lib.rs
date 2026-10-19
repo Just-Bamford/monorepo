@@ -1,7 +1,9 @@
 #![no_std]
 
-use soroban_sdk::{contract, contracterror, contractimpl, contracttype, vec, Address, Env, String, Vec, Symbol};
 use soroban_access_control::{extend_storage_ttl, require_admin_permission};
+use soroban_sdk::{
+    contract, contracterror, contractimpl, contracttype, vec, Address, Env, String, Symbol, Vec,
+};
 
 // ────────────────────────────────────────────────────────────────────────────
 // Types
@@ -52,14 +54,22 @@ impl AllowlistRegistry {
         env.storage().instance().set(&DataKey::Admin, &admin);
         env.storage().instance().set(&DataKey::MemberCount, &0u32);
         env.events().publish(
-            (Symbol::new(&env, "allowlist"), Symbol::new(&env, "initialized")),
+            (
+                Symbol::new(&env, "allowlist"),
+                Symbol::new(&env, "initialized"),
+            ),
             admin,
         );
         Ok(())
     }
 
     /// Add an address to the allowlist with a label and optional expiry.
-    pub fn add(env: Env, address: Address, label: String, expires_at: u64) -> Result<(), ContractError> {
+    pub fn add(
+        env: Env,
+        address: Address,
+        label: String,
+        expires_at: u64,
+    ) -> Result<(), ContractError> {
         let admin = Self::get_admin(&env)?;
         admin.require_auth();
 

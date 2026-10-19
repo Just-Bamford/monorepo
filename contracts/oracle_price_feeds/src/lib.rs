@@ -301,7 +301,10 @@ impl OraclePriceFeeds {
         env.storage().instance().set(&key, &bps);
 
         env.events().publish(
-            (Symbol::new(&env, "oracle"), Symbol::new(&env, "max_deviation_bps_set")),
+            (
+                Symbol::new(&env, "oracle"),
+                Symbol::new(&env, "max_deviation_bps_set"),
+            ),
             bps,
         );
         Ok(())
@@ -602,12 +605,7 @@ mod tests {
             invoke: &MockAuthInvoke {
                 contract: &client.address,
                 fn_name: "update_price",
-                args: (
-                    unauthorized_source.clone(),
-                    pair.clone(),
-                    1000000i128,
-                )
-                    .into_val(&env),
+                args: (unauthorized_source.clone(), pair.clone(), 1000000i128).into_val(&env),
                 sub_invokes: &[],
             },
         }]);
@@ -707,7 +705,10 @@ mod tests {
         }]);
 
         let result = client.try_update_price(&source, &pair, 1600000);
-        assert_eq!(result.unwrap_err().unwrap(), ContractError::InvalidDeviation);
+        assert_eq!(
+            result.unwrap_err().unwrap(),
+            ContractError::InvalidDeviation
+        );
     }
 
     #[test]
